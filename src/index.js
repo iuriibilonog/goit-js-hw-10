@@ -1,6 +1,7 @@
 import './css/styles.css';
 import { debounce } from 'lodash';
 import Notiflix from 'notiflix';
+import { fetchCountries } from './fetchCountries';
 
 const DEBOUNCE_DELAY = 300;
 const inputNode = document.querySelector('#search-box');
@@ -10,30 +11,24 @@ const countryInfo = document.querySelector('.country-info');
 inputNode.addEventListener(
   'input',
   debounce(name => {
-    const inputText = name.target.value;
+    countryInfo.innerHTML = '';
+    countryList.innerHTML = '';
+    const inputText = name.target.value.trim();
+    if (!inputText) {
+      return false;
+    }
     fetchCountries(inputText)
       .then(data => showData(data))
       .catch(error => console.log(error));
   }, DEBOUNCE_DELAY),
 );
 
-function fetchCountries(name) {
-  return fetch(
-    `https://restcountries.com/v3.1/name/${name}?fields=name,capital,population,flag,languages`,
-  ).then(response => {
-    if (!response.ok) {
-      throw new Error(Notiflix.Notify.failure('Oops, there is no country with that name'));
-    }
-    return response.json();
-  });
-}
-
 function showData(data) {
   if (data.length >= 2 && data.length <= 10) {
     const markup = data
-      .map(({ name, flag }) => {
+      .map(({ name, flags }) => {
         return `<li class='list'>
-        <p class='list-item'> ${flag}</p>
+        <p class='list-item'> <img src='${flags.svg}'width='50' height='30'></p>
         <p class='list-item'> ${name.common}</p>
         </li>`;
       })
@@ -41,13 +36,15 @@ function showData(data) {
     countryList.innerHTML = markup;
   } else if (data.length === 1) {
     const markup = data
-      .map(({ name, capital, population, flag, languages }) => {
+      .map(({ name, capital, population, flags, languages }) => {
         return `<li class='info'>
-          <p class='info-item'>  ${flag}</p>
-          <p class='info-item'>  ${name.common}</p>
-          <p class='info-item'> Capital: ${capital}</p>
-          <p class='info-item'> Population: ${population}</p>
-          <p class='info-item'> Languages: ${Object.values(languages)}</p>
+          <p class='info-item'> <img src='${flags.png}'> </p>
+          <p class='info-name'>  ${name.common}</p>
+          <p class='info-item'> <span class='item-title'>Capital:</span> ${capital}</p>
+          <p class='info-item'> <span class='item-title'>Population:</span> ${population}</p>
+          <p class='info-item'> <span class='item-title'>Languages:</span> ${Object.values(
+            languages,
+          )}</p>
           
         </li>`;
       })
