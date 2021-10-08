@@ -55,3 +55,39 @@ function showData(data) {
   }
   // console.log(markup);
 }
+
+// ===========================================
+
+const countryNode = document.querySelector('.modal');
+const backdropNode = document.querySelector('.backdrop');
+backdropNode.addEventListener('click', () => {
+  backdropNode.classList.toggle('hidden');
+});
+
+countryList.addEventListener('click', e => {
+  if (e.target.closest('li').tagName !== 'LI') return false;
+  backdropNode.classList.toggle('hidden');
+  fetchCountries(e.target.textContent)
+    .then(data => countryPage(data))
+    .catch(error => console.log(error));
+});
+
+function countryPage(data) {
+  const markUp = data
+    .map(({ name, capital, population, flags, languages, fullText, region, subregion }) => {
+      return `<div class="country">
+          <img src='${flags.png}'> </p>
+          <p class='info-name'>  ${name.common}</p>
+          <p class='info-item'> <span class='item-title'>Capital:</span> ${capital}</p>
+          <p class='info-item'> <span class='item-title'>Population:</span> ${population}</p>
+          <p class='info-item'> <span class='item-title'>Full Name:</span> ${fullText}</p>
+          <p class='info-item'> <span class='item-title'>Region:</span> ${region}</p>
+          <p class='info-item'> <span class='item-title'>Subregion:</span> ${subregion}</p>
+          <p class='info-item'> <span class='item-title'>Languages:</span> ${Object.values(
+            languages,
+          )}</p></div>`;
+    })
+    .join('');
+  countryNode.innerHTML = markUp;
+  console.log(markUp);
+}

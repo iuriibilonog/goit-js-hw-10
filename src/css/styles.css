@@ -28,6 +28,7 @@ body {
   margin-bottom: 20px;
   padding-left: 10px;
   align-items: center;
+  cursor: pointer;
 }
 
 .info {
@@ -56,4 +57,40 @@ body {
 
 li {
   list-style: none;
+}
+
+.hidden {
+  display: none;
+}
+
+.backdrop {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+  transform: translateX(0%);
+  transition: opacity 250ms linear, visibility 500ms linear, transform 500ms linear;
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  max-height: 700px;
+  background-color: white;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.12), 0px 1px 1px rgba(0, 0, 0, 0.14),
+    0px 2px 1px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  overflow: scroll;
+}
+
+.country {
+  padding-top: 20px;
+  margin-left: 50%;
+  transform: translateX(-50%);
 }
